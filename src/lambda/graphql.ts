@@ -1,5 +1,4 @@
-import context from "../graphql/context";
-import createServer from "../graphql/createServer";
+import { context, createServer } from "../graphql";
 
 const server = createServer(context);
 

@@ -32,7 +32,7 @@ export default gql`
     status: String!
   }
 
-  type Query {
+  extend type Query {
     getTiles(
       pageSize: Int = 10
       pageNumber: Int = 1
