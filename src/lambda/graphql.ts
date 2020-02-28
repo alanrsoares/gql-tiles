@@ -1,12 +1,6 @@
-import { ApolloServer } from "apollo-server-lambda";
-
 import context from "../graphql/context";
-import { typeDefs, resolvers } from "../graphql/tiles";
+import createServer from "../graphql/createServer";
 
-const server = new ApolloServer({
-  typeDefs,
-  resolvers,
-  context
-});
+const server = createServer(context);
 
 exports.handler = server.createHandler();
