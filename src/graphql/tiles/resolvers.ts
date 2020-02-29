@@ -7,7 +7,7 @@ import { dtoToTile } from "./transformers";
 
 const resolvers: IResolvers<unknown, Context> = {
   Query: {
-    async getTiles(_parent, params: GetTilesParams, ctx) {
+    async getTiles(_parent: unknown, params: GetTilesParams, ctx: Context) {
       try {
         const response = await ctx.api.tiles.fetchWithPagination(params);
         return response.data.map(dtoToTile);
