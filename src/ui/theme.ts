@@ -53,6 +53,14 @@ const animations = {
       transform: scale(1);
       opacity: 1;
     }
+  `,
+  shimmer: keyframes`
+    0% {
+      background-position: top left;
+    }
+    100% {
+      background-position: top right;
+    }
   `
 } as const;
 

@@ -1,10 +1,13 @@
-import React, { useMemo, useState } from "react";
+import React, { useMemo, useState, useCallback, useEffect } from "react";
 import { useQuery } from "@apollo/react-hooks";
 import { gql } from "apollo-boost";
-import styled from "styled-components";
+import styled, { css } from "styled-components";
+
+import range from "ramda/es/range";
+import Skeleton from "react-loading-skeleton";
 
 import { Tile } from "graphql/tiles/types";
-import { getRadius, getColor } from "ui/helpers";
+import { getRadius, getColor, getAnimation } from "ui/helpers";
 import { Button } from "ui/components";
 
 const Root = styled.div`
@@ -22,18 +25,20 @@ const ListContainer = styled.div`
   justify-content: center;
 `;
 
-const TileContainer = styled.div<{ src: string }>`
+const TileCard = styled.div<{ src?: string; skeleton?: boolean }>`
   display: flex;
   justify-content: center;
   align-items: center;
   width: 249.5px;
   height: 180px;
-  background-color: ${getColor("gray")};
   border-radius: ${getRadius("lg")};
-  background-image: url(${p => p.src});
+  background-repeat: no-repeat;
+  background-color: ${getColor("gray")};
+  background-image: ${p => (p.skeleton ? "" : css`url(${p.src})`)};
   background-size: cover;
-  background-size: center;
+  background-position: center;
   margin: 0.2rem;
+  overflow: hidden;
   @media screen and (max-width: 1024px) {
     width: calc(100vw / 4 - 1rem);
     height: calc(100vw / 4 - 1rem - 5vw);
@@ -53,8 +58,8 @@ const TileContainer = styled.div<{ src: string }>`
 `;
 
 const GET_TILES = gql`
-  query {
-    getTiles(pageNumber: 1, pageSize: 8) {
+  query GetTiles($pageNumber: Int! = 1, $pageSize: Int! = 8) {
+    getTiles(pageNumber: $pageNumber, pageSize: $pageSize) {
       id
       name
       tileImage
@@ -66,35 +71,69 @@ const GET_TILES = gql`
 
 interface Props {}
 
+const PlaceHolder: React.FC<{ size: number }> = props => {
+  return (
+    <>
+      {range(0, props.size).map(i => (
+        <TileCard skeleton key={`card-${i}`}>
+          <Skeleton width={400} height={400} />
+        </TileCard>
+      ))}
+    </>
+  );
+};
+
 const MerchantTiles: React.FC<Props> = props => {
   const [pageNumber, setPageNumber] = useState(1);
   const [pageSize] = useState(8);
 
-  const { loading, error, data } = useQuery<{ getTiles: Tile[] }>(GET_TILES, {
-    variables: {
-      pageSize,
-      pageNumber
+  const { loading, error, data, fetchMore } = useQuery<{ getTiles: Tile[] }>(
+    GET_TILES,
+    {
+      fetchPolicy: "cache-and-network"
     }
-  });
+  );
+
+  useEffect(() => {
+    if (pageNumber === 1) return;
+
+    fetchMore({
+      variables: { pageNumber, pageSize },
+      updateQuery: (prev, { fetchMoreResult }) => {
+        if (!fetchMoreResult) return prev;
+        return {
+          ...prev,
+          getTiles: prev.getTiles.concat(fetchMoreResult.getTiles)
+        };
+      }
+    });
+  }, [fetchMore, pageNumber, pageSize]);
+
+  const handleLoadMore = useCallback(() => {
+    if (loading) return;
+    setPageNumber(p => p + 1);
+  }, [loading]);
 
   const content = useMemo(() => {
-    if (loading) return <div>Loading...</div>;
     if (error) return <div>Error :( {JSON.stringify(error)}</div>;
 
     return (
       <ListContainer>
         {data?.getTiles.map(tile => (
-          <TileContainer src={tile.tileImage} key={tile.id}></TileContainer>
+          <TileCard src={tile.tileImage} key={tile.id}></TileCard>
         ))}
+        {loading && <PlaceHolder size={pageSize} />}
       </ListContainer>
     );
-  }, [loading, error, data]);
+  }, [loading, data, error, pageSize]);
 
   return (
     <Root>
       {content}
       <div>
-        <Button onClick={() => setPageNumber(pageNumber + 1)}>Load more</Button>
+        <Button onClick={handleLoadMore}>
+          {loading ? "Loading..." : "Load more"}
+        </Button>
       </div>
     </Root>
   );

@@ -28,7 +28,9 @@ export const Button = styled.button`
   border-radius: ${getRadius("xxxl")};
   background: ${getColor("white")};
   border: solid 0.1rem ${getColor("brand")};
-  @media screen and (max-width: 1024px) {
+  color: ${getColor("brand")};
+  outline: none;
+  @media screen and (max-width: 600px) {
     width: 90vw;
   }
 `;
