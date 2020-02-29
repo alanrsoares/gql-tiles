@@ -1,5 +1,4 @@
 import { keyframes } from "styled-components";
-import { darken } from "polished";
 
 export const colors = {
   brand: "#786dff",
