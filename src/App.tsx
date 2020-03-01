@@ -15,12 +15,12 @@ const client = new ApolloClient({
 const App: React.FC = () => (
   <ApolloProvider client={client}>
     <ThemeProvider theme={theme}>
-      <AppRoot className="App">
-        <AppBar>
-          <Clamp>
-            <Logo />
-          </Clamp>
-        </AppBar>
+      <AppBar>
+        <Clamp withPadding>
+          <Logo />
+        </Clamp>
+      </AppBar>
+      <AppRoot>
         <Body>
           <Clamp>
             <MerchantTiles />

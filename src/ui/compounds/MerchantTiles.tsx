@@ -1,4 +1,10 @@
-import React, { useMemo, useState, useCallback, useEffect } from "react";
+import React, {
+  useMemo,
+  useState,
+  useCallback,
+  useEffect,
+  useLayoutEffect
+} from "react";
 import { useQuery } from "@apollo/react-hooks";
 import { gql } from "apollo-boost";
 import styled, { css } from "styled-components";
@@ -8,10 +14,13 @@ import Skeleton from "react-loading-skeleton";
 import { ReactComponent as CircleIcon } from "assets/circle.svg";
 
 import { Tile } from "graphql/tiles/types";
-import { getRadius, getColor, getFontSize } from "ui/helpers";
+import { getRadius, getColor } from "ui/helpers";
 import { Button } from "ui/components";
 
 const Circle = styled(CircleIcon)`
+  width: 0.8rem;
+  height: 0.8rem;
+  margin-right: 0.2rem;
   color: ${getColor("brand")};
 `;
 
@@ -21,7 +30,7 @@ const Root = styled.div`
   align-items: center;
   justify-content: flex-start;
   width: 100%;
-  height: calc(100vh - 6rem);
+
   @media screen and (max-width: 1024px) {
     justify-content: space-between;
   }
@@ -32,6 +41,31 @@ const ListContainer = styled.div`
   flex-wrap: wrap;
   align-items: center;
   justify-content: center;
+`;
+
+const TileOverlay = styled.div`
+  height: 100%;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: ${getColor("shadow")};
+  visibility: hidden;
+  transition: visibility 0.3s ease-in;
+`;
+
+const TileOverlayLink = styled.a`
+  background-image: linear-gradient(to right, #786dff 40%, palevioletred);
+  width: 85%;
+  height: 30%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 3rem;
+  color: ${getColor("white")};
+  text-decoration: none;
+  font-weight: 700;
+  outline: none;
 `;
 
 const TileContainer = styled.div`
@@ -50,11 +84,12 @@ const TileFooter = styled.div`
 `;
 
 const TileTitle = styled.div`
-  font-size: ${getFontSize("lg")};
+  font-size: 1.2rem;
+  margin-bottom: 0.4rem;
 `;
 
 const TileTag = styled.div`
-  font-size: ${getFontSize("sm")};
+  font-size: 1rem;
   color: ${getColor("gray")};
 `;
 
@@ -64,6 +99,7 @@ const EllipsisWrapper = styled.div`
 `;
 
 const TileCard = styled.div<{ src?: string; skeleton?: boolean }>`
+  position: relative;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -94,15 +130,18 @@ const TileCard = styled.div<{ src?: string; skeleton?: boolean }>`
     height: calc(100vw - 1rem - 20vw);
   }
 
-  :hover {
-    opacity: 0.6;
-  }
-
   transition: all 0.3s ease-in;
+
+  :hover {
+    opacity: 0.9;
+    ${TileOverlay} {
+      visibility: visible;
+    }
+  }
 `;
 
 export const Footer = styled.div`
-  margin-top: 1rem;
+  margin: 1rem 0;
 `;
 
 const GET_TILES = gql`
@@ -129,7 +168,13 @@ const PlaceHolder: React.FC<{ size: number }> = props => {
             <Skeleton width={400} height={400} />
           </TileCard>
           <TileFooter>
-            <Circle />
+            <Skeleton
+              circle
+              wrapper={EllipsisWrapper}
+              width="1rem"
+              height="1rem"
+              count={3}
+            />
           </TileFooter>
         </TileContainer>
       ))}
@@ -151,6 +196,12 @@ const MerchantTiles: React.FC<Props> = props => {
   useEffect(() => {
     if (pageNumber === 1) return;
 
+    document.documentElement.scrollBy({ top: pageNumber * 1000 });
+  }, [pageNumber]);
+
+  useEffect(() => {
+    if (pageNumber === 1) return;
+
     fetchMore({
       variables: { pageNumber, pageSize },
       updateQuery: (prev, { fetchMoreResult }) => {
@@ -165,6 +216,7 @@ const MerchantTiles: React.FC<Props> = props => {
 
   const handleLoadMore = useCallback(() => {
     if (loading) return;
+
     setPageNumber(p => p + 1);
   }, [loading]);
 
@@ -175,17 +227,22 @@ const MerchantTiles: React.FC<Props> = props => {
       <ListContainer>
         {data?.getTiles.map(tile => (
           <TileContainer key={tile.id}>
-            <TileCard src={tile.currentTileUrl}></TileCard>
+            <TileCard src={tile.currentTileUrl}>
+              <TileOverlay>
+                <TileOverlayLink
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  href={tile.currentUrl}
+                >
+                  Shop Here
+                </TileOverlayLink>
+              </TileOverlay>
+            </TileCard>
             <TileFooter>
               <TileTitle>{tile.name}</TileTitle>
               {tile.instore && (
                 <TileTag>
-                  <Skeleton
-                    circle
-                    wrapper={EllipsisWrapper}
-                    width=".8rem"
-                    height=".8rem"
-                  />
+                  <Circle />
                   Also in store
                 </TileTag>
               )}

@@ -1,42 +1,55 @@
-import styled from "styled-components";
+import styled, { css } from "styled-components";
 
 import { ReactComponent as LogoSVG } from "assets/brand.svg";
 
-import { getColor, getRadius, getFontFamily } from "ui/helpers";
+import { getColor, getFontFamily, getFontSize } from "ui/helpers";
 
 export const AppRoot = styled.div`
-  height: 100vh;
-  font-size: 16px;
+  min-height: 100vh;
+  font-size: ${getFontSize("default")};
   display: flex;
   flex-direction: column;
   align-items: center;
   font-family: ${getFontFamily("default")};
+  overflow-x: hidden;
+  @media screen and (max-width: 600px) {
+    font-size: ${getFontSize("sm")};
+  }
 `;
 
 export const AppBar = styled.div`
-  justify-content: space-between;
-  padding: 0.5rem;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  height: 5rem;
+  background-image: linear-gradient(
+    to bottom right,
+    #786dff 30%,
+    palevioletred
+  );
 `;
 
 export const Logo = styled(LogoSVG)`
-  color: ${getColor("brand")};
+  color: ${getColor("white")};
   width: 10rem;
 `;
 
 export const Button = styled.button`
   height: 3rem;
   width: 10rem;
-  border-radius: ${getRadius("xxxl")};
+  border-radius: 1.5rem;
   background: ${getColor("white")};
   border: solid 0.1rem ${getColor("brand")};
   color: ${getColor("brand")};
   outline: none;
+  font-weight: 700;
   @media screen and (max-width: 600px) {
     width: 90vw;
   }
 `;
 
-export const Clamp = styled.div`
+export const Clamp = styled.div<{ withPadding?: boolean }>`
   display: flex;
   width: 1024px;
   flex-direction: row;
@@ -44,9 +57,14 @@ export const Clamp = styled.div`
   justify-content: space-between;
   @media screen and (max-width: 1024px) {
     width: 100vw;
-    padding-left: 0.5rem;
-    padding-right: 0.5rem;
   }
+  ${p =>
+    p.withPadding
+      ? css`
+          padding-left: 1rem;
+          padding-right: 1rem;
+        `
+      : ""};
 `;
 
 export const Body = styled.main`

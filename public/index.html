@@ -20,18 +20,25 @@
       @import url("https://fonts.googleapis.com/css?family=Lato&display=swap");
       @import url("https://cdn.jsdelivr.net/npm/modern-normalize/modern-normalize.min.css");
 
-      @keyframes rotate {
-        from {
-          transform: rotate(0deg);
+      @keyframes pulsate {
+        0% {
+          transform: scale(1);
         }
-        to {
-          transform: rotate(360deg);
+        50% {
+          transform: scale(1.1);
+        }
+        100% {
+          transform: scale(1);
         }
       }
 
       .Splash {
         height: 100vh;
-        background: #333 /* theme.colors.black */;
+        background-image: linear-gradient(
+          to bottom right,
+          #786dff 50%,
+          palevioletred
+        );
         display: flex;
         flex-direction: column;
         align-items: center;
@@ -39,16 +46,10 @@
       }
 
       .Splash-icon {
-        height: 20vw;
-        width: 20vw;
-        animation: rotate 3s linear infinite;
-      }
-
-      .Splash-label {
-        font-size: 10vw;
-        font-family: Lato, sans-serif;
-        color: #ffd400; /* theme.colors.primary */
-        text-shadow: 2px 4px 2px rgba(0, 0, 0, 0.8);
+        height: calc(min(50vw, 50vh));
+        width: calc(min(50vw, 50vh));
+        color: white;
+        animation: pulsate 2.5s ease-in infinite;
       }
     </style>
   </body>
