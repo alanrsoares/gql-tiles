@@ -4,11 +4,20 @@
 
 ## Server
 
-Apollo Server over REST running serverless on AWS Lambda (powered by Netlify)
+- Apollo Server + TypeScript
+- AWS Lambda (powered by Netlify)
+- Fractal/DDD Architecture
+- Testability with pluggable apollo server context
+- Axios
 
 ## Client
 
-React + Apollo Boost
+- React + TypeScript
+- Apollo Boost
+- Styled Components + Polished
+- Responsive Grid
+- Splash Screen + React.Lazy for faster load time
+- PWA Ready
 
 ### Google Lighthouse Report
 
@@ -16,8 +25,30 @@ React + Apollo Boost
 
 ## Developing locally
 
-Spin up dev environment:
+Install dependencies
+
+with `yarn`
+
+```bash
+yarn
+```
+
+with `npm`
+
+```bash
+npm i
+```
+
+Spin up dev environment
+
+with `yarn`:
 
 ```bash
 yarn dev
+```
+
+with `npm`:
+
+```bash
+npm run dev
 ```
