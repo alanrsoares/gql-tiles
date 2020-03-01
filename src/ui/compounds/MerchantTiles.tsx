@@ -2,20 +2,29 @@ import React, { useMemo, useState, useCallback, useEffect } from "react";
 import { useQuery } from "@apollo/react-hooks";
 import { gql } from "apollo-boost";
 import styled, { css } from "styled-components";
-
 import range from "ramda/es/range";
 import Skeleton from "react-loading-skeleton";
 
+import { ReactComponent as CircleIcon } from "assets/circle.svg";
+
 import { Tile } from "graphql/tiles/types";
-import { getRadius, getColor, getAnimation } from "ui/helpers";
+import { getRadius, getColor, getFontSize } from "ui/helpers";
 import { Button } from "ui/components";
+
+const Circle = styled(CircleIcon)`
+  color: ${getColor("brand")};
+`;
 
 const Root = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
+  justify-content: flex-start;
   width: 100%;
+  height: calc(100vh - 6rem);
+  @media screen and (max-width: 1024px) {
+    justify-content: space-between;
+  }
 `;
 
 const ListContainer = styled.div`
@@ -23,6 +32,35 @@ const ListContainer = styled.div`
   flex-wrap: wrap;
   align-items: center;
   justify-content: center;
+`;
+
+const TileContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+`;
+
+const TileFooter = styled.div`
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: center;
+  height: 4rem;
+`;
+
+const TileTitle = styled.div`
+  font-size: ${getFontSize("lg")};
+`;
+
+const TileTag = styled.div`
+  font-size: ${getFontSize("sm")};
+  color: ${getColor("gray")};
+`;
+
+const EllipsisWrapper = styled.div`
+  display: inline-block;
+  margin: 0.2rem;
 `;
 
 const TileCard = styled.div<{ src?: string; skeleton?: boolean }>`
@@ -55,6 +93,16 @@ const TileCard = styled.div<{ src?: string; skeleton?: boolean }>`
     width: calc(100vw - 1rem);
     height: calc(100vw - 1rem - 20vw);
   }
+
+  :hover {
+    opacity: 0.6;
+  }
+
+  transition: all 0.3s ease-in;
+`;
+
+export const Footer = styled.div`
+  margin-top: 1rem;
 `;
 
 const GET_TILES = gql`
@@ -62,7 +110,8 @@ const GET_TILES = gql`
     getTiles(pageNumber: $pageNumber, pageSize: $pageSize) {
       id
       name
-      tileImage
+      currentUrl
+      currentTileUrl
       online
       instore
     }
@@ -75,9 +124,14 @@ const PlaceHolder: React.FC<{ size: number }> = props => {
   return (
     <>
       {range(0, props.size).map(i => (
-        <TileCard skeleton key={`card-${i}`}>
-          <Skeleton width={400} height={400} />
-        </TileCard>
+        <TileContainer key={`card-${i}`}>
+          <TileCard skeleton>
+            <Skeleton width={400} height={400} />
+          </TileCard>
+          <TileFooter>
+            <Circle />
+          </TileFooter>
+        </TileContainer>
       ))}
     </>
   );
@@ -115,12 +169,28 @@ const MerchantTiles: React.FC<Props> = props => {
   }, [loading]);
 
   const content = useMemo(() => {
-    if (error) return <div>Error :( {JSON.stringify(error)}</div>;
+    if (error) return <div>Error :(</div>;
 
     return (
       <ListContainer>
         {data?.getTiles.map(tile => (
-          <TileCard src={tile.tileImage} key={tile.id}></TileCard>
+          <TileContainer key={tile.id}>
+            <TileCard src={tile.currentTileUrl}></TileCard>
+            <TileFooter>
+              <TileTitle>{tile.name}</TileTitle>
+              {tile.instore && (
+                <TileTag>
+                  <Skeleton
+                    circle
+                    wrapper={EllipsisWrapper}
+                    width=".8rem"
+                    height=".8rem"
+                  />
+                  Also in store
+                </TileTag>
+              )}
+            </TileFooter>
+          </TileContainer>
         ))}
         {loading && <PlaceHolder size={pageSize} />}
       </ListContainer>
@@ -130,11 +200,11 @@ const MerchantTiles: React.FC<Props> = props => {
   return (
     <Root>
       {content}
-      <div>
+      <Footer>
         <Button onClick={handleLoadMore}>
           {loading ? "Loading..." : "Load more"}
         </Button>
-      </div>
+      </Footer>
     </Root>
   );
 };

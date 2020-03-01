@@ -28,7 +28,6 @@ export const shadows = {
 } as const;
 
 export const fontFamilies = {
-  display: "'Black Ops One', monospace",
   default: "'Lato', sans-serif",
   voice: "'Vollkorn', serif"
 };
@@ -36,11 +35,12 @@ export const fontFamilies = {
 const baseFontSize = 18;
 
 export const fontSizes = {
-  default: baseFontSize,
-  xs: baseFontSize * 0.6,
-  sm: baseFontSize * 0.8,
-  md: baseFontSize,
-  lg: baseFontSize * 1.2
+  default: `${baseFontSize}px`,
+  xxs: `${baseFontSize * 0.4}px`,
+  xs: `${baseFontSize * 0.6}px`,
+  sm: `${baseFontSize * 0.8}px`,
+  md: `${baseFontSize}px`,
+  lg: `${baseFontSize * 1.2}px`
 } as const;
 
 const animations = {

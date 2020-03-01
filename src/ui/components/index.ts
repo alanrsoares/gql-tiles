@@ -2,7 +2,7 @@ import styled from "styled-components";
 
 import { ReactComponent as LogoSVG } from "assets/brand.svg";
 
-import { getColor, getRadius } from "ui/helpers";
+import { getColor, getRadius, getFontFamily } from "ui/helpers";
 
 export const AppRoot = styled.div`
   height: 100vh;
@@ -10,6 +10,7 @@ export const AppRoot = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
+  font-family: ${getFontFamily("default")};
 `;
 
 export const AppBar = styled.div`
