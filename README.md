@@ -2,10 +2,12 @@
 
 ## Server
 
-Apollo server over REST
+Apollo Server over REST running serverless on AWS Lambda (powered by Netlify)
 
 ## Client
 
 React + Apollo Boost
 
-![Google Lighthouse Report](./lighthouse-report.png)
+### Google Lighthouse Report
+
+![Google Lighthouse Report](/lighthouse-report.png)
