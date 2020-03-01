@@ -1,10 +1,4 @@
-import React, {
-  useMemo,
-  useState,
-  useCallback,
-  useEffect,
-  useLayoutEffect
-} from "react";
+import React, { useMemo, useState, useCallback, useEffect } from "react";
 import { useQuery } from "@apollo/react-hooks";
 import { gql } from "apollo-boost";
 import styled, { css } from "styled-components";
@@ -18,9 +12,9 @@ import { getRadius, getColor } from "ui/helpers";
 import { Button } from "ui/components";
 
 const Circle = styled(CircleIcon)`
-  width: 0.8rem;
-  height: 0.8rem;
-  margin-right: 0.2rem;
+  width: 0.5rem;
+  height: 0.5rem;
+  margin-right: 0.4rem;
   color: ${getColor("brand")};
 `;
 
@@ -89,7 +83,7 @@ const TileTitle = styled.div`
 `;
 
 const TileTag = styled.div`
-  font-size: 1rem;
+  font-size: 0.8rem;
   color: ${getColor("gray")};
 `;
 
@@ -105,7 +99,7 @@ const TileCard = styled.div<{ src?: string; skeleton?: boolean }>`
   align-items: center;
   width: 249.5px;
   height: 180px;
-  border-radius: ${getRadius("lg")};
+  border-radius: ${getRadius("xl")};
   background-repeat: no-repeat;
   background-color: ${getColor("gray")};
   background-image: ${p => (p.skeleton ? "" : css`url(${p.src})`)};
