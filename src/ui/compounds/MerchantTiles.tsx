@@ -138,6 +138,20 @@ export const Footer = styled.div`
   margin: 1rem 0;
 `;
 
+type PartialTile = Pick<
+  Tile,
+  "id" | "name" | "currentUrl" | "online" | "instore" | "currentTileUrl"
+>;
+
+interface GetTilesData {
+  getTiles: PartialTile[];
+}
+
+interface GetTilesVars {
+  pageNumber: number;
+  pageSize: number;
+}
+
 const GET_TILES = gql`
   query GetTiles($pageNumber: Int! = 1, $pageSize: Int! = 8) {
     getTiles(pageNumber: $pageNumber, pageSize: $pageSize) {
@@ -176,28 +190,21 @@ const PlaceHolder: React.FC<{ size: number }> = props => {
   );
 };
 
-const MerchantTiles: React.FC<Props> = props => {
+const MerchantTiles: React.FC<Props> = _props => {
   const [pageNumber, setPageNumber] = useState(1);
-  const [pageSize] = useState(8);
 
-  const { loading, error, data, fetchMore } = useQuery<{ getTiles: Tile[] }>(
-    GET_TILES,
-    {
-      fetchPolicy: "cache-and-network"
-    }
-  );
-
-  useEffect(() => {
-    if (pageNumber === 1) return;
-
-    document.documentElement.scrollBy({ top: pageNumber * 1000 });
-  }, [pageNumber]);
+  const { loading, error, data, fetchMore } = useQuery<
+    GetTilesData,
+    GetTilesVars
+  >(GET_TILES, {
+    fetchPolicy: "cache-and-network"
+  });
 
   useEffect(() => {
     if (pageNumber === 1) return;
 
     fetchMore({
-      variables: { pageNumber, pageSize },
+      variables: { pageNumber },
       updateQuery: (prev, { fetchMoreResult }) => {
         if (!fetchMoreResult) return prev;
         return {
@@ -206,7 +213,7 @@ const MerchantTiles: React.FC<Props> = props => {
         };
       }
     });
-  }, [fetchMore, pageNumber, pageSize]);
+  }, [fetchMore, pageNumber]);
 
   const handleLoadMore = useCallback(() => {
     if (loading) return;
