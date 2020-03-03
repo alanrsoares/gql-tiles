@@ -167,6 +167,8 @@ const GET_TILES = gql`
 
 interface Props {}
 
+const PAGE_SIZE = 8;
+
 const PlaceHolder: React.FC<{ size: number }> = props => {
   return (
     <>
@@ -250,10 +252,10 @@ const MerchantTiles: React.FC<Props> = _props => {
             </TileFooter>
           </TileContainer>
         ))}
-        {loading && <PlaceHolder size={pageSize} />}
+        {loading && <PlaceHolder size={PAGE_SIZE} />}
       </ListContainer>
     );
-  }, [loading, data, error, pageSize]);
+  }, [loading, data, error]);
 
   return (
     <Root>
