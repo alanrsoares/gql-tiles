@@ -1,4 +1,10 @@
-import React, { useMemo, useState, useCallback, useEffect } from "react";
+import React, {
+  useMemo,
+  useState,
+  useCallback,
+  useEffect,
+  useLayoutEffect
+} from "react";
 import { useQuery } from "@apollo/react-hooks";
 import { gql } from "apollo-boost";
 import styled, { css } from "styled-components";
@@ -203,7 +209,9 @@ const MerchantTiles: React.FC<Props> = _props => {
   });
 
   useEffect(() => {
-    if (pageNumber === 1) return;
+    const shouldSkipEffect = pageNumber === 1;
+
+    if (shouldSkipEffect) return;
 
     fetchMore({
       variables: { pageNumber },
@@ -217,13 +225,25 @@ const MerchantTiles: React.FC<Props> = _props => {
     });
   }, [fetchMore, pageNumber]);
 
+  useLayoutEffect(() => {
+    const shouldSkipEffect = pageNumber === 1 || !loading;
+
+    if (shouldSkipEffect) return;
+
+    const timeoutId = setTimeout(() => {
+      window.scrollTo(0, document.body.scrollHeight);
+    }, 160 /* 10 frames merely cosmetic delay */);
+
+    return () => {
+      // effect cleanup
+      clearTimeout(timeoutId);
+    };
+  }, [loading, pageNumber]);
+
   const handleLoadMore = useCallback(() => {
     if (loading) return;
 
     setPageNumber(p => p + 1);
-    setTimeout(() => {
-      window.scrollTo(0, document.body.scrollHeight);
-    }, 100);
   }, [loading]);
 
   const content = useMemo(() => {
