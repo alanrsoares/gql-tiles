@@ -221,6 +221,9 @@ const MerchantTiles: React.FC<Props> = _props => {
     if (loading) return;
 
     setPageNumber(p => p + 1);
+    setTimeout(() => {
+      window.scrollTo(0, document.body.scrollHeight);
+    }, 100);
   }, [loading]);
 
   const content = useMemo(() => {
