@@ -5,17 +5,17 @@ import React, {
   useEffect,
   useLayoutEffect
 } from "react";
-import { useQuery } from "@apollo/react-hooks";
-import { gql } from "apollo-boost";
 import styled, { css } from "styled-components";
 import range from "ramda/es/range";
 import Skeleton from "react-loading-skeleton";
 
 import { ReactComponent as CircleIcon } from "assets/circle.svg";
 
-import { Tile } from "graphql/tiles/types";
+import { useWindowSize, usePrevious } from "lib/hooks";
+
 import { getRadius, getColor } from "ui/helpers";
 import { Button } from "ui/components";
+import { useTiles } from "graphql/hooks";
 
 const Circle = styled(CircleIcon)`
   width: 0.5rem;
@@ -41,6 +41,9 @@ const ListContainer = styled.div`
   flex-wrap: wrap;
   align-items: center;
   justify-content: center;
+  @media screen and (max-width: 600px) {
+    padding-bottom: 6rem;
+  }
 `;
 
 const TileOverlay = styled.div`
@@ -141,39 +144,22 @@ const TileCard = styled.div<{ src?: string; skeleton?: boolean }>`
 `;
 
 export const Footer = styled.div`
-  margin: 1rem 0;
-`;
-
-type PartialTile = Pick<
-  Tile,
-  "id" | "name" | "currentUrl" | "online" | "instore" | "currentTileUrl"
->;
-
-interface GetTilesData {
-  getTiles: PartialTile[];
-}
-
-interface GetTilesVars {
-  pageNumber: number;
-  pageSize: number;
-}
-
-const GET_TILES = gql`
-  query GetTiles($pageNumber: Int! = 1, $pageSize: Int! = 8) {
-    getTiles(pageNumber: $pageNumber, pageSize: $pageSize) {
-      id
-      name
-      currentUrl
-      currentTileUrl
-      online
-      instore
-    }
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 0.5rem;
+  @media screen and (max-width: 600px) {
+    padding: 0.5rem;
+    border-top: solid 0.01em ${getColor("shadow")};
+    position: fixed;
+    bottom: 0;
+    background-color: rgba(240, 240, 240, 0.8);
+    box-shadow: -1px -2px 2px rgba(100, 100, 100, 0.4);
   }
 `;
 
 interface Props {}
-
-const PAGE_SIZE = 8;
 
 const PlaceHolder: React.FC<{ size: number }> = props => {
   return (
@@ -199,31 +185,35 @@ const PlaceHolder: React.FC<{ size: number }> = props => {
 };
 
 const MerchantTiles: React.FC<Props> = _props => {
-  const [pageNumber, setPageNumber] = useState(1);
+  const { innerWidth } = useWindowSize();
 
-  const { loading, error, data, fetchMore } = useQuery<
-    GetTilesData,
-    GetTilesVars
-  >(GET_TILES, {
-    fetchPolicy: "cache-and-network"
+  const [pageNumber, setPageNumber] = useState(1);
+  const previousPageNumber = usePrevious(pageNumber);
+  const pageSize = useMemo(() => (innerWidth <= 600 ? 6 : 8), [innerWidth]);
+
+  const { loading, error, data, fetchMore } = useTiles({
+    pageNumber,
+    pageSize
   });
 
   useEffect(() => {
-    const shouldSkipEffect = pageNumber === 1;
+    const shouldSkipEffect =
+      pageNumber === 1 || pageNumber === previousPageNumber;
 
     if (shouldSkipEffect) return;
 
     fetchMore({
-      variables: { pageNumber },
+      variables: { pageNumber, pageSize },
       updateQuery: (prev, { fetchMoreResult }) => {
         if (!fetchMoreResult) return prev;
+
         return {
           ...prev,
           getTiles: prev.getTiles.concat(fetchMoreResult.getTiles)
         };
       }
     });
-  }, [fetchMore, pageNumber]);
+  }, [fetchMore, pageNumber, previousPageNumber, pageSize]);
 
   useLayoutEffect(() => {
     const shouldSkipEffect = pageNumber === 1 || !loading;
@@ -243,7 +233,7 @@ const MerchantTiles: React.FC<Props> = _props => {
   const handleLoadMore = useCallback(() => {
     if (loading) return;
 
-    setPageNumber(p => p + 1);
+    setPageNumber(x => x + 1);
   }, [loading]);
 
   const content = useMemo(() => {
@@ -275,10 +265,10 @@ const MerchantTiles: React.FC<Props> = _props => {
             </TileFooter>
           </TileContainer>
         ))}
-        {loading && <PlaceHolder size={PAGE_SIZE} />}
+        {loading && <PlaceHolder size={pageSize} />}
       </ListContainer>
     );
-  }, [loading, data, error]);
+  }, [loading, pageSize, data, error]);
 
   return (
     <Root>

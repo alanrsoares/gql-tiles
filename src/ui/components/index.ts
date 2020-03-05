@@ -18,6 +18,7 @@ export const AppRoot = styled.div`
 `;
 
 export const AppBar = styled.div`
+  position: sticky;
   display: flex;
   flex-direction: row;
   justify-content: center;
@@ -40,13 +41,14 @@ export const Button = styled.button`
   width: 10rem;
   border-radius: 1.5rem;
   background: ${getColor("white")};
-  border: solid 0.1rem ${getColor("brand")};
-  color: ${getColor("brand")};
+  border: solid 0.1rem white;
+  color: ${getColor("white")};
   outline: none;
   font-weight: 700;
   @media screen and (max-width: 600px) {
     width: 90vw;
   }
+  background-image: linear-gradient(to right, #786dff 30%, palevioletred);
 `;
 
 export const Clamp = styled.div<{ withPadding?: boolean }>`
