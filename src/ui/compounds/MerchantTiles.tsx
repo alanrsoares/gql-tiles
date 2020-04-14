@@ -3,7 +3,7 @@ import React, {
   useState,
   useCallback,
   useEffect,
-  useLayoutEffect
+  useLayoutEffect,
 } from "react";
 import styled, { css } from "styled-components";
 import range from "ramda/es/range";
@@ -111,7 +111,7 @@ const TileCard = styled.div<{ src?: string; skeleton?: boolean }>`
   border-radius: ${getRadius("xl")};
   background-repeat: no-repeat;
   background-color: ${getColor("gray")};
-  background-image: ${p => (p.skeleton ? "" : css`url(${p.src})`)};
+  background-image: ${(p) => (p.skeleton ? "" : css`url(${p.src})`)};
   background-size: cover;
   background-position: center;
   margin: 0.2rem;
@@ -161,10 +161,10 @@ export const Footer = styled.div`
 
 interface Props {}
 
-const PlaceHolder: React.FC<{ size: number }> = props => {
+const PlaceHolder: React.FC<{ size: number }> = (props) => {
   return (
     <>
-      {range(0, props.size).map(i => (
+      {range(0, props.size).map((i) => (
         <TileContainer key={`card-${i}`}>
           <TileCard skeleton>
             <Skeleton width={400} height={400} />
@@ -184,7 +184,7 @@ const PlaceHolder: React.FC<{ size: number }> = props => {
   );
 };
 
-const MerchantTiles: React.FC<Props> = _props => {
+const MerchantTiles: React.FC<Props> = (_props) => {
   const { innerWidth } = useWindowSize();
 
   const [pageNumber, setPageNumber] = useState(1);
@@ -193,7 +193,7 @@ const MerchantTiles: React.FC<Props> = _props => {
 
   const { loading, error, data, fetchMore } = useTiles({
     pageNumber,
-    pageSize
+    pageSize,
   });
 
   useEffect(() => {
@@ -209,9 +209,9 @@ const MerchantTiles: React.FC<Props> = _props => {
 
         return {
           ...prev,
-          getTiles: prev.getTiles.concat(fetchMoreResult.getTiles)
+          getTiles: prev.getTiles.concat(fetchMoreResult.getTiles),
         };
-      }
+      },
     });
   }, [fetchMore, pageNumber, previousPageNumber, pageSize]);
 
@@ -233,7 +233,7 @@ const MerchantTiles: React.FC<Props> = _props => {
   const handleLoadMore = useCallback(() => {
     if (loading) return;
 
-    setPageNumber(x => x + 1);
+    setPageNumber((x) => x + 1);
   }, [loading]);
 
   const content = useMemo(() => {
@@ -241,7 +241,7 @@ const MerchantTiles: React.FC<Props> = _props => {
 
     return (
       <ListContainer>
-        {data?.getTiles.map(tile => (
+        {data?.getTiles.map((tile) => (
           <TileContainer key={tile.id}>
             <TileCard src={tile.currentTileUrl}>
               <TileOverlay>

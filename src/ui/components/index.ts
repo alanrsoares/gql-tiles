@@ -19,6 +19,7 @@ export const AppRoot = styled.div`
 
 export const AppBar = styled.div`
   position: sticky;
+  top: 0;
   display: flex;
   flex-direction: row;
   justify-content: center;
@@ -29,6 +30,7 @@ export const AppBar = styled.div`
     #786dff 30%,
     palevioletred
   );
+  z-index: 2;
 `;
 
 export const Logo = styled(LogoSVG)`
@@ -60,7 +62,7 @@ export const Clamp = styled.div<{ withPadding?: boolean }>`
   @media screen and (max-width: 1024px) {
     width: 100vw;
   }
-  ${p =>
+  ${(p) =>
     p.withPadding
       ? css`
           padding-left: 1rem;

@@ -6,7 +6,7 @@ export const colors = {
   white: "#FFF",
   gray: "#CCC",
   darkGray: "#666",
-  shadow: "rgba(0, 0, 0, 0.4)"
+  shadow: "rgba(0, 0, 0, 0.4)",
 } as const;
 
 export const radii = {
@@ -17,19 +17,19 @@ export const radii = {
   xl: "0.4rem",
   xxl: "0.6rem",
   xxxl: "1rem",
-  round: "50%"
+  round: "50%",
 } as const;
 
 export const shadows = {
   default: `0 1px 2px ${colors.shadow}`,
   inset: `inset 1px 0 2px`,
   top: `0 -2px 6px ${colors.shadow}`,
-  none: "none"
+  none: "none",
 } as const;
 
 export const fontFamilies = {
   default: "'Lato', sans-serif",
-  voice: "'Vollkorn', serif"
+  voice: "'Vollkorn', serif",
 };
 
 const baseFontSize = 18;
@@ -40,7 +40,7 @@ export const fontSizes = {
   xs: `${baseFontSize * 0.6}px`,
   sm: `${baseFontSize * 0.8}px`,
   md: `${baseFontSize}px`,
-  lg: `${baseFontSize * 1.2}px`
+  lg: `${baseFontSize * 1.2}px`,
 } as const;
 
 const animations = {
@@ -61,7 +61,7 @@ const animations = {
     100% {
       background-position: top right;
     }
-  `
+  `,
 } as const;
 
 const theme = {
@@ -70,7 +70,7 @@ const theme = {
   fontSizes,
   fontFamilies,
   shadows,
-  animations
+  animations,
 } as const;
 
 export type Color = keyof typeof colors;

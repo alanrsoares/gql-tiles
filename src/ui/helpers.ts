@@ -3,7 +3,7 @@ import styled, {
   ThemedCssFunction,
   ThemedStyledInterface,
   ThemeProps as BaseThemeProps,
-  useTheme as baseUseTheme
+  useTheme as baseUseTheme,
 } from "styled-components";
 
 import { Theme } from "ui/theme";
