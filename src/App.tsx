@@ -9,7 +9,7 @@ import MerchantTiles from "ui/compounds/MerchantTiles";
 import theme from "ui/theme";
 
 const client = new ApolloClient({
-  uri: "/.netlify/functions/graphql"
+  uri: "/.netlify/functions/graphql",
 });
 
 const App: React.FC = () => (
