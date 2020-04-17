@@ -243,12 +243,12 @@ const MerchantTiles: React.FC<Props> = (_props) => {
       <ListContainer>
         {data?.getTiles.map((tile) => (
           <TileContainer key={tile.id}>
-            <TileCard src={tile.currentTileUrl}>
+            <TileCard src={String(tile.currentTileUrl)}>
               <TileOverlay>
                 <TileOverlayLink
                   target="_blank"
                   rel="noopener noreferrer"
-                  href={tile.currentUrl}
+                  href={String(tile.currentUrl)}
                 >
                   Shop Here
                 </TileOverlayLink>

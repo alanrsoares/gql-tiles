@@ -14,11 +14,11 @@ export enum CacheControlScope {
   Private = 'PRIVATE'
 }
 
-export type Query = {
+export interface Query {
    __typename?: 'Query';
   _?: Maybe<Scalars['Boolean']>;
   getTiles: Array<Tile>;
-};
+}
 
 
 export type QueryGetTilesArgs = {
@@ -27,7 +27,7 @@ export type QueryGetTilesArgs = {
   include?: Maybe<TileRelationship>;
 };
 
-export type Tile = {
+export interface Tile {
    __typename?: 'Tile';
   id: Scalars['String'];
   type: Scalars['String'];
@@ -50,7 +50,7 @@ export type Tile = {
   currentLogoUrl?: Maybe<Scalars['String']>;
   currentUrl?: Maybe<Scalars['String']>;
   status: Scalars['String'];
-};
+}
 
 export enum TileRelationship {
   Categories = 'categories',

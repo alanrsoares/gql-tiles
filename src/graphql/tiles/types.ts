@@ -1,3 +1,9 @@
+import { Tile as _Tile, QueryGetTilesArgs } from "../../generated/graphql";
+
+export type Tile = _Tile;
+
+export type GetTilesParams = QueryGetTilesArgs;
+
 export interface TileAttributes {
   name: string;
   internalName: string;
@@ -36,15 +42,3 @@ export interface TileDto {
   type: string;
   attributes: TileAttributes;
 }
-
-export interface Tile extends Omit<TileAttributes, "tileImage"> {
-  id: string;
-  type: string;
-  tileImage: string;
-}
-
-export type GetTilesParams = Partial<{
-  pageSize: number;
-  pageNumber: number;
-  include: TileRelationship;
-}>;

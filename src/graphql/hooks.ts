@@ -1,7 +1,7 @@
 import { useQuery } from "@apollo/react-hooks";
 import { gql } from "apollo-boost";
 
-import { Tile } from "./tiles/types";
+import { Tile, GetTilesParams } from "./tiles/types";
 
 type PartialTile = Pick<
   Tile,
@@ -10,11 +10,6 @@ type PartialTile = Pick<
 
 export interface GetTilesData {
   getTiles: PartialTile[];
-}
-
-export interface GetTilesVars {
-  pageNumber: number;
-  pageSize: number;
 }
 
 const GET_TILES = gql`
@@ -30,9 +25,9 @@ const GET_TILES = gql`
   }
 `;
 
-export function useTiles(variables: GetTilesVars) {
-  return useQuery<GetTilesData, GetTilesVars>(GET_TILES, {
+export function useTiles(variables: GetTilesParams) {
+  return useQuery<GetTilesData, GetTilesParams>(GET_TILES, {
     variables,
-    fetchPolicy: "cache-and-network"
+    fetchPolicy: "cache-and-network",
   });
 }
