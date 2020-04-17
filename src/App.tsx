@@ -6,10 +6,15 @@ import { ThemeProvider } from "styled-components";
 import { AppRoot, AppBar, Logo, Clamp, Body } from "ui/components";
 import MerchantTiles from "ui/compounds/MerchantTiles";
 
+import typeDefs from "graphql/typeDefs";
+import resolvers from "graphql/resolvers";
+
 import theme from "ui/theme";
 
 const client = new ApolloClient({
   uri: "/.netlify/functions/graphql",
+  typeDefs,
+  resolvers,
 });
 
 const App: React.FC = () => (
