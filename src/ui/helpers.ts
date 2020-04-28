@@ -1,23 +1,13 @@
-import styled, {
-  css as baseCSS,
-  ThemedCssFunction,
-  ThemedStyledInterface,
-  ThemeProps as BaseThemeProps,
-  useTheme as baseUseTheme,
-} from "styled-components";
+import { ThemeProps, DefaultTheme } from "styled-components";
 
-import { Theme } from "ui/theme";
+export type DefaultThemeProps = ThemeProps<DefaultTheme>;
 
-export type ThemeProps = BaseThemeProps<Theme>;
+export type ThemedProps<P = {}> = DefaultThemeProps & P;
 
-export type ThemedProps<P = {}> = ThemeProps & P;
-
-export const useTheme = baseUseTheme as () => Theme;
-
-export const getThemeProp = <P extends keyof Theme>(key: P) => <
-  TProps extends ThemeProps = ThemeProps
+export const getThemeProp = <P extends keyof DefaultTheme>(key: P) => <
+  TProps extends DefaultThemeProps = DefaultThemeProps
 >(
-  lens: ((props: TProps) => keyof Theme[P]) | keyof Theme[P]
+  lens: ((props: TProps) => keyof DefaultTheme[P]) | keyof DefaultTheme[P]
 ) => (props: TProps) => {
   const $value = typeof lens === "function" ? lens(props) : lens;
 
@@ -30,6 +20,3 @@ export const getFontSize = getThemeProp("fontSizes");
 export const getShadow = getThemeProp("shadows");
 export const getFontFamily = getThemeProp("fontFamilies");
 export const getAnimation = getThemeProp("animations");
-
-export const css = baseCSS as ThemedCssFunction<Theme>;
-export default styled as ThemedStyledInterface<Theme>;
